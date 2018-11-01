@@ -1,22 +1,27 @@
 package com.study.onlineshop.web.servlet;
 
+import com.study.onlineshop.entity.Product;
+import com.study.onlineshop.service.ProductService;
 import com.study.onlineshop.service.SecurityService;
+import com.study.onlineshop.service.impl.RequestParser;
 import com.study.onlineshop.web.templater.PageGenerator;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
-public class LoginServlet extends HttpServlet {
+public class AddProductServlet extends HttpServlet {
+
+    private ProductService productService;
     private SecurityService securityService;
 
-    public LoginServlet(SecurityService securityService) {
+    public AddProductServlet(SecurityService securityService, ProductService productService) {
+        this.productService = productService;
         this.securityService = securityService;
     }
 
@@ -25,8 +30,7 @@ public class LoginServlet extends HttpServlet {
         if (securityService.checkPermission(this, req)) {
             PageGenerator pageGenerator = PageGenerator.instance();
             HashMap<String, Object> parameters = new HashMap<>();
-
-            String page = pageGenerator.getPage("login", parameters);
+            String page = pageGenerator.getPage("addProduct", parameters);
             resp.getWriter().write(page);
         } else {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -36,20 +40,14 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         if (securityService.checkPermission(this, req)) {
-            String login = req.getParameter("login");
-            String password = req.getParameter("password");
-            System.out.println(login + " : " + password);
-
-            String userToken = securityService.login(login, password);
-            if (userToken != null) {
-                Cookie cookie = new Cookie("user-token", userToken);
-                resp.addCookie(cookie);
-                resp.sendRedirect("/");
-            } else {
-                resp.sendRedirect("/login");
-            }
+            String name = req.getParameter("name");
+            LocalDateTime creationDate = LocalDateTime.parse(req.getParameter("creationDate"));
+            double price = Double.parseDouble(req.getParameter("price"));
+            productService.create(new Product(name, creationDate, price));
+            resp.sendRedirect("/");
         } else {
             resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
     }
+
 }
