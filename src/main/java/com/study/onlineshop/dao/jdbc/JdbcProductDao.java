@@ -46,7 +46,7 @@ public class JdbcProductDao implements ProductDao {
     }
 
     @Override
-    public void create(Product product) throws ServletException {
+    public void create(Product product) {
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(CREATE_SQL);) {
             statement.setString(1, product.getName());
@@ -54,7 +54,7 @@ public class JdbcProductDao implements ProductDao {
             statement.setDouble(3, product.getPrice());
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new ServletException(e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -65,7 +65,7 @@ public class JdbcProductDao implements ProductDao {
     }
 
     @Override
-    public Product get(int id) throws ServletException {
+    public Product get(int id) {
         try (Connection connection = getConnection();
              PreparedStatement statement = prepareGetStatement(connection, id);
              ResultSet resultSet = statement.executeQuery();
@@ -76,12 +76,12 @@ public class JdbcProductDao implements ProductDao {
             }
             return null;
         } catch (SQLException e) {
-            throw new ServletException(e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void update(Product product) throws ServletException {
+    public void update(Product product) {
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(UPDATE_SQL);) {
             statement.setString(1, product.getName());
@@ -90,18 +90,18 @@ public class JdbcProductDao implements ProductDao {
             statement.setInt(4, product.getId());
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new ServletException(e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void delete(int id) throws ServletException {
+    public void delete(int id)  {
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
             statement.setInt(1, id);
             statement.executeUpdate();
         } catch (SQLException e) {
-            throw new ServletException(e);
+            throw new RuntimeException(e);
         }
     }
 

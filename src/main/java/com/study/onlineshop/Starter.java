@@ -3,6 +3,7 @@ package com.study.onlineshop;
 import com.study.onlineshop.dao.jdbc.JdbcProductDao;
 import com.study.onlineshop.dao.jdbc.JdbcUserDao;
 import com.study.onlineshop.entity.Group;
+import com.study.onlineshop.service.impl.DefaultPermissionService;
 import com.study.onlineshop.service.impl.DefaultProductService;
 import com.study.onlineshop.service.impl.DefaultSecurityService;
 import com.study.onlineshop.web.servlet.*;
@@ -32,38 +33,39 @@ public class Starter {
             // configure services
             DefaultProductService defaultProductService = new DefaultProductService(jdbcProductDao);
             DefaultSecurityService defaultSecurityService = new DefaultSecurityService(jdbcUserDao);
+            DefaultPermissionService defaultPermissionService = new DefaultPermissionService();
 
             // store
             List<String> activeTokens = new ArrayList<>();
 
             // servlets
-            ProductsServlet productsServlet = new ProductsServlet(defaultSecurityService, defaultProductService);
-            AddProductServlet addProductServlet = new AddProductServlet(defaultSecurityService, defaultProductService);
-            EditProductServlet editProductServlet = new EditProductServlet(defaultSecurityService, defaultProductService);
-            DeleteProductServlet deleteProductServlet = new DeleteProductServlet(defaultSecurityService, defaultProductService);
+            ProductsServlet productsServlet = new ProductsServlet(defaultPermissionService, defaultSecurityService, defaultProductService);
+            AddProductServlet addProductServlet = new AddProductServlet(defaultPermissionService, defaultSecurityService, defaultProductService);
+            EditProductServlet editProductServlet = new EditProductServlet(defaultPermissionService, defaultSecurityService, defaultProductService);
+            DeleteProductServlet deleteProductServlet = new DeleteProductServlet(defaultPermissionService, defaultSecurityService, defaultProductService);
             ProductsApiServlet productsApiServlet = new ProductsApiServlet(defaultProductService);
-            LoginServlet loginServlet = new LoginServlet(defaultSecurityService);
-            LogoutServlet logoutServlet = new LogoutServlet(defaultSecurityService);
+            LoginServlet loginServlet = new LoginServlet(defaultPermissionService, defaultSecurityService);
+            LogoutServlet logoutServlet = new LogoutServlet(defaultPermissionService, defaultSecurityService);
 
             // config web server
             ServletContextHandler servletContextHandler = new ServletContextHandler();
             servletContextHandler.addServlet(new ServletHolder(productsServlet), "/products");
             servletContextHandler.addServlet(new ServletHolder(productsServlet), "/");
-            defaultSecurityService.addPermission(productsServlet, EnumSet.of(Group.USER, Group.ADMIN));
+            defaultPermissionService.addPermission(productsServlet, EnumSet.of(Group.USER, Group.ADMIN));
 
             servletContextHandler.addServlet(new ServletHolder(addProductServlet), "/product/add");
-            defaultSecurityService.addPermission(addProductServlet, EnumSet.of(Group.ADMIN));
+            defaultPermissionService.addPermission(addProductServlet, EnumSet.of(Group.ADMIN));
             servletContextHandler.addServlet(new ServletHolder(editProductServlet), "/product/edit/*");
-            defaultSecurityService.addPermission(editProductServlet, EnumSet.of(Group.ADMIN));
+            defaultPermissionService.addPermission(editProductServlet, EnumSet.of(Group.ADMIN));
             servletContextHandler.addServlet(new ServletHolder(deleteProductServlet), "/product/delete/*");
-            defaultSecurityService.addPermission(deleteProductServlet, EnumSet.of(Group.ADMIN));
+            defaultPermissionService.addPermission(deleteProductServlet, EnumSet.of(Group.ADMIN));
 
             servletContextHandler.addServlet(new ServletHolder(productsApiServlet), "/api/v1/products");
 
             servletContextHandler.addServlet(new ServletHolder(loginServlet), "/login");
-            defaultSecurityService.addPermission(loginServlet, EnumSet.of(Group.GUEST));
+            defaultPermissionService.addPermission(loginServlet, EnumSet.of(Group.GUEST));
             servletContextHandler.addServlet(new ServletHolder(logoutServlet), "/logout");
-            defaultSecurityService.addPermission(logoutServlet, EnumSet.of(Group.USER, Group.ADMIN));
+            defaultPermissionService.addPermission(logoutServlet, EnumSet.of(Group.USER, Group.ADMIN));
 
             Server server = new Server(Integer.parseInt(properties.getProperty("port")));
             server.setHandler(servletContextHandler);

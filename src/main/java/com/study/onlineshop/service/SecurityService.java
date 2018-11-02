@@ -1,22 +1,17 @@
 package com.study.onlineshop.service;
 
 import com.study.onlineshop.entity.Group;
+import com.study.onlineshop.entity.User;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import java.util.EnumSet;
-import java.util.List;
 
 public interface SecurityService {
 
-    void addPermission(HttpServlet servlet, EnumSet<Group> groups);
+    String getUserNameByToken(String token);
 
-    boolean checkPermission(HttpServlet servlet, String userName);
+    User getUserByToken(String token);
 
-    boolean checkPermission(HttpServlet servlet, HttpServletRequest req);
-
-    String getAuthUserName(HttpServletRequest req);
+    Group getGroupByToken(String token);
 
     String login(String name, String password);
 
