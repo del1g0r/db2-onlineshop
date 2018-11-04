@@ -1,10 +1,18 @@
+CREATE EXTENSION pgcrypto;
+
 CREATE TABLE product
 (
-   	id  SERIAL PRIMARY KEY      NOT NULL,
-    creation_date timestamp  not null,
-    name text,
-    price real
-)
+    id            SERIAL     NOT NULL PRIMARY KEY
+  , creation_date TIMESTAMP  NOT NULL
+  , name          TEXT       NOT NULL
+  , price         REAL       NOT NULL
+);
 
-ALTER TABLE product
-    OWNER to postgres;
+CREATE TABLE "user"
+(
+    id            SERIAL     NOT NULL PRIMARY KEY 
+  , name          TEXT       NOT NULL
+  , pswhash       TEXT       NOT NULL
+  , group_name    TEXT       NOT NULL CHECK (group_name IN ('GUEST', 'USER', 'ADMIN'))
+  , UNIQUE        name
+);

@@ -8,6 +8,17 @@ public class Product {
     private LocalDateTime creationDate;
     private double price;
 
+    public Product(int id, String name, LocalDateTime creationDate, double price) {
+        this.id = id;
+        this.name = name;
+        this.creationDate = creationDate;
+        this.price = price;
+    }
+
+    public Product(String name, LocalDateTime creationDate, double price) {
+        this(0, name, creationDate, price);
+    }
+
     public int getId() {
         return id;
     }
