@@ -28,7 +28,7 @@ public class Starter {
 
     public static void main(String[] args) throws Exception {
         Properties properties = new Properties();
-        if (new File("application.properties 1").exists()) {
+        if (new File("application.properties").exists()) {
             try (InputStream inputStream = new FileInputStream("application.properties");
             ) {
                 properties.load(inputStream);
