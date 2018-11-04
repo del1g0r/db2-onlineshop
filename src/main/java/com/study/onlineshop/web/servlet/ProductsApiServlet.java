@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class ProductsApiServlet extends HttpServlet {
+
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private ProductService productService;
 

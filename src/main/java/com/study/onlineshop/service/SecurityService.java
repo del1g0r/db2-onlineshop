@@ -1,19 +1,12 @@
 package com.study.onlineshop.service;
 
-import com.study.onlineshop.entity.Group;
-import com.study.onlineshop.entity.User;
-
-import javax.servlet.http.HttpServletRequest;
+import com.study.onlineshop.entity.Session;
 
 public interface SecurityService {
 
-    String getUserNameByToken(String token);
+    Session login(String login, String password);
 
-    User getUserByToken(String token);
+    void logout(String token);
 
-    Group getGroupByToken(String token);
-
-    String login(String name, String password);
-
-    void logout(HttpServletRequest req);
+    Session getSession(String token);
 }

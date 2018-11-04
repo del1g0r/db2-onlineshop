@@ -4,7 +4,6 @@ import com.study.onlineshop.dao.ProductDao;
 import com.study.onlineshop.dao.jdbc.mapper.ProductRowMapper;
 import com.study.onlineshop.entity.Product;
 
-import javax.servlet.ServletException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,54 +1,54 @@
 package com.study.onlineshop.service.impl;
 
-import com.study.onlineshop.dao.UserDao;
-import com.study.onlineshop.entity.Group;
+import com.study.onlineshop.entity.Purchase;
+import com.study.onlineshop.entity.Session;
 import com.study.onlineshop.entity.User;
 import com.study.onlineshop.service.SecurityService;
+import com.study.onlineshop.service.UserService;
 
-import javax.servlet.http.HttpServletRequest;
-
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
 public class DefaultSecurityService implements SecurityService {
 
-    private UserDao userDao;
-    private HashMap<String, String> activeTokens;
+    private UserService userService;
+    private HashMap<String, Session> sessions = new HashMap<>();
 
-    public DefaultSecurityService(UserDao userDao) {
-        this.userDao = userDao;
-        activeTokens = new HashMap<>();
+    public DefaultSecurityService(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
-    public String getUserNameByToken(String token) {
-        return activeTokens.get(token);
-    }
-
-    @Override
-    public User getUserByToken(String token) {
-        return userDao.getByName(getUserNameByToken(token));
-    }
-
-    @Override
-    public Group getGroupByToken(String token) {
-        User user = getUserByToken(token);
-        return user == null ? Group.GUEST : user.getGroup();
-    }
-
-
-    @Override
-    public String login(String name, String password) {
-        if (userDao.checkPassword(name, password)) {
-            String userToken = UUID.randomUUID().toString();
-            activeTokens.put(userToken, name);
-            return userToken;
+    public Session login(String login, String password) {
+        User user = userService.checkUser(login, password);
+        if (user != null) {
+            Session session = new Session();
+            session.setUser(user);
+            session.setToken(UUID.randomUUID().toString());
+            session.setExpireTime(LocalDateTime.now().plusHours(5));
+            session.setPurchases(new ArrayList<Purchase>());
+            sessions.put(session.getToken(), session);
+            return session;
         }
         return null;
     }
 
     @Override
-    public void logout(HttpServletRequest req) {
-        activeTokens.remove(RequestParser.getToken(req.getCookies()));
+    public void logout(String token) {
+        sessions.remove(token);
+    }
+
+    @Override
+    public Session getSession(String token) {
+        Session session = sessions.get(token);
+        if (session != null) {
+            if (session.getExpireTime().isAfter(LocalDateTime.now())) {
+                return session;
+            }
+            sessions.remove(token);
+        }
+        return null;
     }
 }
