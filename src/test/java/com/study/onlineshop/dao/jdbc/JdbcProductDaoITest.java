@@ -12,9 +12,9 @@ public class JdbcProductDaoITest {
     @Test
     public void testGetAll() throws Exception {
         Properties properties = new Properties();
-        properties.replace("url", "jdbc:postgresql://localhost/db2_onlineshop");
-        properties.replace("name", "postgres");
-        properties.replace("password", "root");
+        properties.put("url", "jdbc:postgresql://localhost/db2_onlineshop");
+        properties.put("name", "postgres");
+        properties.put("password", "123456");
 
         JdbcProductDao jdbcProductDao = new JdbcProductDao(properties);
         List<Product> products = jdbcProductDao.getAll();

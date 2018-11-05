@@ -16,6 +16,10 @@ public enum Group {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public static Group getByName(String name) {
         Group[] groups = values();
         for (Group group : groups) {

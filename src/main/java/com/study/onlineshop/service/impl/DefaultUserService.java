@@ -18,4 +18,12 @@ public class DefaultUserService implements UserService {
     public List<User> getAll() {
         return userDao.getAll();
     }
+
+    @Override
+    public User checkUser(String login, String password) {
+        if (userDao.checkPassword(login, password)) {
+            return userDao.getByName(login);
+        }
+        return null;
+    }
 }

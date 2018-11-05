@@ -12,8 +12,11 @@ import java.util.Properties;
 public class JdbcUserDao implements UserDao {
 
     private static final String GET_ALL_SQL = "SELECT id, name, group_name FROM \"user\"";
+    private static final String CHECK_PWD_SQL = "SELECT pswhash = crypt(?, salt) is_checked FROM \"user\" WHERE name = ?";
+    private static final String CREATE_SQL = "INSERT INTO \"user\" (name, salt, pswhash, group_name) SELECT ?, t.md5, crypt(?, t.md5), 'GUEST' FROM (SELECT gen_salt('md5') md5) t";
+    private static final String GET_SQL = "SELECT id, name, group_name FROM \"user\" WHERE id = ?";
     private static final String GET_BY_NAME_SQL = "SELECT id, name, group_name FROM \"user\" WHERE name = ?";
-    private static final String CHECK_PWD_SQL = "SELECT pswhash = crypt(?, 'db2_onlineshop') is_checked FROM \"user\" WHERE name = ?";
+    private static final String DELETE_SQL = "DELETE FROM \"user\" WHERE id = ?";
     private static final UserRowMapper USER_ROW_MAPPER = new UserRowMapper();
 
     private Properties properties;
