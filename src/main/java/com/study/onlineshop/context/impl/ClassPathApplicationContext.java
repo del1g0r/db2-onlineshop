@@ -2,10 +2,9 @@ package com.study.onlineshop.context.impl;
 
 import com.study.onlineshop.context.*;
 import com.study.onlineshop.context.exception.BeanInstantiationException;
-import com.study.onlineshop.context.pojo.Bean;
-import com.study.onlineshop.context.pojo.BeanDefinition;
+import com.study.onlineshop.context.entity.Bean;
+import com.study.onlineshop.context.entity.BeanDefinition;
 
-import javax.sql.DataSource;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,7 +24,7 @@ public class ClassPathApplicationContext implements ApplicationContext {
 
     @Override
     public Object getBean(String id) {
-        return beans.get(id);
+        return beans.get(id).getValue();
     }
 
     @Override
@@ -33,7 +32,7 @@ public class ClassPathApplicationContext implements ApplicationContext {
         Iterator iterator = beans.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry entry = (Map.Entry) iterator.next();
-            Bean bean = (Bean)entry.getValue();
+            Bean bean = (Bean) entry.getValue();
             Object object = bean.getValue();
             if (object.getClass().equals(clazz))
                 return (T) object;
@@ -43,7 +42,8 @@ public class ClassPathApplicationContext implements ApplicationContext {
 
     @Override
     public <T> T getBean(String id, Class<T> clazz) {
-        return (T) beans.get(id).getValue();
+        Object object = getBean(id);
+        return (T) object;
     }
 
     private Map<String, Bean> constructBeans(List<BeanDefinition> beanDefinitions) {

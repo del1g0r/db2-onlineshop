@@ -1,6 +1,6 @@
 package com.study.onlineshop.context.impl;
 
-import com.study.onlineshop.context.pojo.BeanDefinition;
+import com.study.onlineshop.context.entity.BeanDefinition;
 import com.study.onlineshop.context.BeanDefinitionReader;
 import com.study.onlineshop.context.exception.BeanInstantiationException;
 import org.xml.sax.Attributes;
