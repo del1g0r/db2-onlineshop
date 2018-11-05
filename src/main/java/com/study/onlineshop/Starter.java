@@ -69,7 +69,7 @@ public class Starter {
         // config web server
         ServletContextHandler servletContextHandler = new ServletContextHandler();
         servletContextHandler.addServlet(new ServletHolder(productsServlet), "/products");
-        servletContextHandler.addServlet(new ServletHolder(productsServlet), "/");
+        servletContextHandler.addServlet(new ServletHolder(productsServlet), "");
         servletContextHandler.addServlet(new ServletHolder(addProductServlet), "/product/add");
         servletContextHandler.addServlet(new ServletHolder(editProductServlet), "/product/edit/*");
         servletContextHandler.addServlet(new ServletHolder(deleteProductServlet), "/product/delete/*");
