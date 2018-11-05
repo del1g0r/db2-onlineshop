@@ -89,10 +89,7 @@ public class XmlBeanDefinitionReader implements BeanDefinitionReader {
             InputSource source = new InputSource(stream);
             parser.parse(source);
             return handler.getBeanDefinitions();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new BeanInstantiationException("Can't read definitiona", e);
-        } catch (SAXException e) {
+        } catch (IOException | SAXException e) {
             e.printStackTrace();
             throw new BeanInstantiationException("Can't read definitiona", e);
         }
