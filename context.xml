@@ -1,0 +1,16 @@
+<beans>
+   <bean id="source" class="org.apache.commons.dbcp2.BasicDataSource">
+       <property name="url" value = "jdbc:postgresql://localhost/db2_onlineshop" />
+       <property name="username" value = "postgres" />
+       <property name="password" value = "123456" />
+   </bean>
+
+   <bean id="productDao" class="com.study.onlineshop.dao.jdbc.JdbcProductDao">
+       <property name="source" ref = "source" />
+   </bean>
+
+   <bean id="userDao" class="com.study.onlineshop.dao.jdbc.JdbcUserDao">
+       <property name="source" ref = "source" />
+   </bean>
+</beans>
+
