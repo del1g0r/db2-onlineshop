@@ -94,16 +94,16 @@ public class ClassPathApplicationContext implements ApplicationContext {
     <T> T getValue(String value, Class<T> valueClass) {
         switch (valueClass.getName()) {
             case "int":
-            case "java.lang,Integer":
+            case "java.lang.Integer":
                 return (T) Integer.valueOf(value);
             case "long":
-            case "java.lang,Long":
+            case "java.lang.Long":
                 return (T) Long.valueOf(value);
             case "float":
-            case "java.lang,Float":
+            case "java.lang.Float":
                 return (T) Float.valueOf(value);
             case "boolean":
-            case "java.lang,Boolean":
+            case "java.lang.Boolean":
                 return (T) Boolean.valueOf(value);
             case "java.lang.String":
                 return (T) value;
