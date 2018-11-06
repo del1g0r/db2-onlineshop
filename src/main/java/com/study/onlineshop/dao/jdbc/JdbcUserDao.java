@@ -4,10 +4,10 @@ import com.study.onlineshop.dao.UserDao;
 import com.study.onlineshop.dao.jdbc.mapper.UserRowMapper;
 import com.study.onlineshop.entity.User;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class JdbcUserDao implements UserDao {
 
@@ -19,10 +19,14 @@ public class JdbcUserDao implements UserDao {
     private static final String DELETE_SQL = "DELETE FROM \"user\" WHERE id = ?";
     private static final UserRowMapper USER_ROW_MAPPER = new UserRowMapper();
 
-    private Properties properties;
+    private DataSource source;
 
-    public JdbcUserDao(Properties properties) {
-        this.properties = properties;
+    public DataSource getSource() {
+        return source;
+    }
+
+    public void setSource(DataSource source) {
+        this.source = source;
     }
 
     @Override
@@ -91,9 +95,6 @@ public class JdbcUserDao implements UserDao {
     }
 
     private Connection getConnection() throws SQLException {
-        String url = properties.getProperty("url");
-        String name = properties.getProperty("name");
-        String password = properties.getProperty("password");
-        return DriverManager.getConnection(url, name, password);
+        return source.getConnection();
     }
 }

@@ -12,11 +12,22 @@ import java.io.IOException;
 public class DeleteCartServlet extends HttpServlet {
 
     private ProductService productService;
-    private CartService cardService;
+    private CartService cartService;
 
-    public DeleteCartServlet(CartService cardService, ProductService productService) {
-        this.cardService = cardService;
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
         this.productService = productService;
+    }
+
+    public CartService getCartService() {
+        return cartService;
+    }
+
+    public void setCartService(CartService cartService) {
+        this.cartService = cartService;
     }
 
     @Override
@@ -24,7 +35,7 @@ public class DeleteCartServlet extends HttpServlet {
         Session session = (Session) req.getAttribute("session");
         if (session != null) {
             int id = Integer.parseInt(req.getParameter("id"));
-            cardService.delete(session.getPurchases(), productService.get(id));
+            cartService.delete(session.getPurchases(), productService.get(id));
             resp.sendRedirect("/cart");
         }
     }

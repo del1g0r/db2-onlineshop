@@ -4,10 +4,10 @@ import com.study.onlineshop.dao.ProductDao;
 import com.study.onlineshop.dao.jdbc.mapper.ProductRowMapper;
 import com.study.onlineshop.entity.Product;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 public class JdbcProductDao implements ProductDao {
 
@@ -18,10 +18,14 @@ public class JdbcProductDao implements ProductDao {
     private static final String DELETE_SQL = "DELETE FROM product WHERE id = ?";
     private static final ProductRowMapper PRODUCT_ROW_MAPPER = new ProductRowMapper();
 
-    private Properties properties;
+    private DataSource source;
 
-    public JdbcProductDao(Properties properties) {
-        this.properties = properties;
+    public DataSource getSource() {
+        return source;
+    }
+
+    public void setSource(DataSource source) {
+        this.source = source;
     }
 
     @Override
@@ -70,8 +74,7 @@ public class JdbcProductDao implements ProductDao {
              ResultSet resultSet = statement.executeQuery();
         ) {
             if (resultSet.next()) {
-                Product product = PRODUCT_ROW_MAPPER.mapRow(resultSet);
-                return product;
+                return PRODUCT_ROW_MAPPER.mapRow(resultSet);
             }
             return null;
         } catch (SQLException e) {
@@ -94,7 +97,7 @@ public class JdbcProductDao implements ProductDao {
     }
 
     @Override
-    public void delete(int id)  {
+    public void delete(int id) {
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
             statement.setInt(1, id);
@@ -105,9 +108,7 @@ public class JdbcProductDao implements ProductDao {
     }
 
     private Connection getConnection() throws SQLException {
-        String url = properties.getProperty("url");
-        String name = properties.getProperty("name");
-        String password = properties.getProperty("password");
-        return DriverManager.getConnection(url, name, password);
+        return source.getConnection();
     }
+
 }

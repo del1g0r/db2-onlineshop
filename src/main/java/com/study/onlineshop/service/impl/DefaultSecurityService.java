@@ -1,6 +1,5 @@
 package com.study.onlineshop.service.impl;
 
-import com.study.onlineshop.entity.Purchase;
 import com.study.onlineshop.entity.Session;
 import com.study.onlineshop.entity.User;
 import com.study.onlineshop.service.SecurityService;
@@ -13,11 +12,27 @@ import java.util.UUID;
 
 public class DefaultSecurityService implements SecurityService {
 
-    private UserService userService;
     private HashMap<String, Session> sessions = new HashMap<>();
+    private UserService userService;
 
-    public DefaultSecurityService(UserService userService) {
+    public UserService getUserService() {
+        return userService;
+    }
+
+    int sessionAge;
+
+    public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Override
+    public void setSessionAge(int age) {
+        sessionAge = age;
+    }
+
+    @Override
+    public int getSessionAge() {
+        return sessionAge;
     }
 
     @Override
@@ -27,8 +42,8 @@ public class DefaultSecurityService implements SecurityService {
             Session session = new Session();
             session.setUser(user);
             session.setToken(UUID.randomUUID().toString());
-            session.setExpireTime(LocalDateTime.now().plusHours(5));
-            session.setPurchases(new ArrayList<Purchase>());
+            session.setExpireTime(LocalDateTime.now().plusSeconds(sessionAge));
+            session.setPurchases(new ArrayList<>());
             sessions.put(session.getToken(), session);
             return session;
         }

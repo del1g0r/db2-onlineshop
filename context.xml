@@ -1,16 +1,77 @@
 <beans>
-   <bean id="source" class="org.apache.commons.dbcp2.BasicDataSource">
-       <property name="url" value = "jdbc:postgresql://localhost/db2_onlineshop" />
-       <property name="username" value = "postgres" />
-       <property name="password" value = "123456" />
-   </bean>
+    <bean id="source" class="org.apache.commons.dbcp2.BasicDataSource">
+        <property name="url" value="jdbc:postgresql://ec2-79-125-12-27.eu-west-1.compute.amazonaws.com/d7reisj10l7hbe"/>
+        <property name="username" value="zyjljzwtwnnpxi"/>
+        <property name="password" value="899a358db5b9489a92bc181c026ccdb0230b20f2def45b0d0f64863b49773fc1"/>
+        <property name="maxTotal" value="4"/>
+        <property name="testOnBorrow" value="true"/>
+    </bean>
 
-   <bean id="productDao" class="com.study.onlineshop.dao.jdbc.JdbcProductDao">
-       <property name="source" ref = "source" />
-   </bean>
+    <!-- DAO -->
+    <bean id="userDao" class="com.study.onlineshop.dao.jdbc.JdbcUserDao">
+        <property name="source" ref="source"/>
+    </bean>
 
-   <bean id="userDao" class="com.study.onlineshop.dao.jdbc.JdbcUserDao">
-       <property name="source" ref = "source" />
-   </bean>
+    <bean id="productDao" class="com.study.onlineshop.dao.jdbc.JdbcProductDao">
+        <property name="source" ref="source"/>
+    </bean>
+
+    <!-- Services -->
+    <bean id="userService" class="com.study.onlineshop.service.impl.DefaultUserService">
+        <property name="userDao" ref="userDao"/>
+    </bean>
+
+    <bean id="securityService" class="com.study.onlineshop.service.impl.DefaultSecurityService">
+        <property name="userService" ref="userService"/>
+        <property name="sessionAge" value="3600"/>
+    </bean>
+
+    <bean id="productService" class="com.study.onlineshop.service.impl.DefaultProductService">
+        <property name="productDao" ref="productDao"/>
+    </bean>
+
+    <bean id="cartService" class="com.study.onlineshop.service.impl.DefaultCartService"/>
+
+    <!--  Servlets -->
+    <bean id="productsServlet" class="com.study.onlineshop.web.servlet.ProductsServlet">
+        <property name="productService" ref="productService"/>
+    </bean>
+
+    <bean id="addProductServlet" class="com.study.onlineshop.web.servlet.AddProductServlet">
+        <property name="productService" ref="productService"/>
+    </bean>
+
+    <bean id="editProductServlet" class="com.study.onlineshop.web.servlet.EditProductServlet">
+        <property name="productService" ref="productService"/>
+    </bean>
+
+    <bean id="deleteProductServlet" class="com.study.onlineshop.web.servlet.DeleteProductServlet">
+        <property name="productService" ref="productService"/>
+    </bean>
+
+    <bean id="loginServlet" class="com.study.onlineshop.web.servlet.LoginServlet">
+        <property name="securityService" ref="securityService"/>
+    </bean>
+
+    <bean id="logoutServlet" class="com.study.onlineshop.web.servlet.LogoutServlet">
+        <property name="securityService" ref="securityService"/>
+    </bean>
+
+    <bean id="cartServlet" class="com.study.onlineshop.web.servlet.CartServlet"/>
+
+    <bean id="addCartServlet" class="com.study.onlineshop.web.servlet.AddCartServlet">
+        <property name="productService" ref="productService"/>
+        <property name="cartService" ref="cartService"/>
+    </bean>
+
+    <bean id="deleteCartServlet" class="com.study.onlineshop.web.servlet.DeleteCartServlet">
+        <property name="productService" ref="productService"/>
+        <property name="cartService" ref="cartService"/>
+    </bean>
+
+    <!-- Wrapped server -->
+    <bean id="serverWrapper" class="com.study.onlineshop.ServerWrapper">
+        <property name="port" value="8081"/>
+    </bean>
 </beans>
 

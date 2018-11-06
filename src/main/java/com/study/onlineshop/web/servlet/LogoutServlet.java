@@ -18,7 +18,11 @@ public class LogoutServlet extends HttpServlet {
 
     private SecurityService securityService;
 
-    public LogoutServlet(SecurityService securityService) {
+    public SecurityService getSecurityService() {
+        return securityService;
+    }
+
+    public void setSecurityService(SecurityService securityService) {
         this.securityService = securityService;
     }
 
@@ -27,9 +31,9 @@ public class LogoutServlet extends HttpServlet {
         Session session = (Session) req.getAttribute("session");
         if (session != null) {
             securityService.logout(session.getToken());
-            Cookie newCookie = new Cookie("user-token", "");
-            newCookie.setMaxAge(0);
-            resp.addCookie(newCookie);
+            Cookie cookie = new Cookie("user-token", "");
+            cookie.setMaxAge(0);
+            resp.addCookie(cookie);
         }
         resp.sendRedirect("/");
     }

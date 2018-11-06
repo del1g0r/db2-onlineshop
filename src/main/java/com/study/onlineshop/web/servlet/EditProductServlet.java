@@ -16,7 +16,11 @@ public class EditProductServlet extends HttpServlet {
 
     private ProductService productService;
 
-    public EditProductServlet(ProductService productService) {
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
         this.productService = productService;
     }
 
