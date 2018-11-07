@@ -14,16 +14,16 @@ public class ClassPathApplicationContextTest {
     public static class TestClass {
 
         private boolean boolValue;
-        private int intValue;
+        private Integer intValue;
         private float floatValue;
         private String strValue;
 
 
-        public int getIntValue() {
+        public Integer getIntValue() {
             return intValue;
         }
 
-        public void setIntValue(int intValue) {
+        public void setIntValue(Integer intValue) {
             this.intValue = intValue;
         }
 
@@ -77,7 +77,7 @@ public class ClassPathApplicationContextTest {
         context.injectValueDepenencies(beanDefinitions, beans);
 
         assertTrue(testClass.isBoolValue());
-        assertEquals(2, testClass.getIntValue());
+        assertEquals(2, testClass.getIntValue().intValue());
         assertEquals(3, testClass.getFloatValue(), 0);
         assertEquals("hello", testClass.getStrValue());
     }

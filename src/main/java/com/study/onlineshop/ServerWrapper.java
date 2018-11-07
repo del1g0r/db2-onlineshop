@@ -1,23 +1,24 @@
 package com.study.onlineshop;
 
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 
 public class ServerWrapper {
 
     private int port;
-    private ServletContextHandler servletContextHandler;
+    private HandlerList handlerList;
 
     public int getPort() {
         return port;
     }
 
-    public ServletContextHandler getServletContextHandler() {
-        return servletContextHandler;
+    public HandlerList getHandlerList() {
+        return handlerList;
     }
 
-    public void setServletContextHandler(ServletContextHandler servletContextHandler) {
-        this.servletContextHandler = servletContextHandler;
+    public void setHandlerList(HandlerList handlerList) {
+        this.handlerList = handlerList;
     }
 
     public void setPort(int port) {
@@ -26,7 +27,7 @@ public class ServerWrapper {
 
     public void start() throws Exception {
         Server server = new Server(port);
-        server.setHandler(servletContextHandler);
+        server.setHandler(handlerList);
         server.start();
 
     }

@@ -36,6 +36,7 @@ public class ClassPathApplicationContext implements ApplicationContext {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getBean(Class<T> clazz) {
         Iterator iterator = beans.entrySet().iterator();
         while (iterator.hasNext()) {
@@ -49,6 +50,7 @@ public class ClassPathApplicationContext implements ApplicationContext {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> T getBean(String id, Class<T> clazz) {
         Object object = getBean(id);
         return (T) object;
@@ -91,6 +93,7 @@ public class ClassPathApplicationContext implements ApplicationContext {
         }
     }
 
+    @SuppressWarnings("unchecked")
     <T> T getValue(String value, Class<T> valueClass) {
         switch (valueClass.getName()) {
             case "int":
@@ -118,9 +121,7 @@ public class ClassPathApplicationContext implements ApplicationContext {
                 Bean bean = beans.get(beanDefinition.getId());
                 Object object = bean.getValue();
                 Map<String, String> dependencies = beanDefinition.getValDependencies();
-                Iterator iterator = dependencies.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry entry = (Map.Entry) iterator.next();
+                for (Map.Entry entry : dependencies.entrySet()) {
                     Method method = getMethodByName("set" + entry.getKey(), object.getClass());
                     method.invoke(object, getValue((String) entry.getValue(), method.getParameterTypes()[0]));
                 }
@@ -139,9 +140,7 @@ public class ClassPathApplicationContext implements ApplicationContext {
                 Bean bean = beans.get(beanDefinition.getId());
                 Object object = bean.getValue();
                 Map<String, String> dependencies = beanDefinition.getRefDependencies();
-                Iterator iterator = dependencies.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry entry = (Map.Entry) iterator.next();
+                for (Map.Entry<String,String> entry : dependencies.entrySet()) {
                     Method method = getMethodByName("set" + entry.getKey(), object.getClass());
                     method.invoke(object, beans.get(entry.getValue()).getValue());
                 }

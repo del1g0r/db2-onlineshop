@@ -6,6 +6,10 @@ import com.study.onlineshop.context.impl.XmlBeanDefinitionReader;
 import com.study.onlineshop.entity.Group;
 import com.study.onlineshop.service.SecurityService;
 import com.study.onlineshop.web.filter.RoleFilter;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -13,6 +17,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
+import java.net.URL;
 import java.util.EnumSet;
 
 public class Starter {
@@ -21,6 +26,13 @@ public class Starter {
         // configure
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader("context.xml");
         ApplicationContextProvider.setApplicationContext(new ClassPathApplicationContext(reader));
+
+        ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.setDirectoriesListed(true);
+        resourceHandler.setResourceBase(Starter.class.getResource("/webapp").toExternalForm());
+
+        ContextHandler contextHandler = new ContextHandler("/static");
+        contextHandler.setHandler(resourceHandler);
 
         // config web server
         ServletContextHandler servletContextHandler = new ServletContextHandler();
@@ -48,9 +60,13 @@ public class Starter {
         servletContextHandler.addFilter(new FilterHolder(userFilter), "/cart", EnumSet.of(DispatcherType.REQUEST));
         servletContextHandler.addFilter(new FilterHolder(userFilter), "/cart/*", EnumSet.of(DispatcherType.REQUEST));
         servletContextHandler.addFilter(new FilterHolder(adminFilter), "/product/*", EnumSet.of(DispatcherType.REQUEST));
+        servletContextHandler.addFilter(new FilterHolder(guestFilter), "/static/*", EnumSet.of(DispatcherType.REQUEST));
+
+        HandlerList handlerList = new HandlerList();
+        handlerList.setHandlers(new Handler[]{contextHandler, servletContextHandler});
 
         ServerWrapper serverWrapper = context.getBean("serverWrapper", ServerWrapper.class);
-        serverWrapper.setServletContextHandler(servletContextHandler);
+        serverWrapper.setHandlerList(handlerList);
         serverWrapper.start();
     }
 }

@@ -56,7 +56,7 @@
     <div class="container" style="width:100%">
         <#list products as product>
         <div class="border rounded float-left w25 p-1" style="min-width:240px">
-            <img src="https://www.euscoop.com/user-uploads/59a667d323a9493b937a94c1/014ed1ca-979d-4837-a284-47d174c5fabc.png" alt="${product.name}" style="width:200px;height:200px"/>
+            <img src="static/images/buy.png" alt="${product.name}" style="width:200px;height:200px"/>
             <div>${product.name}</div>
             <div class="p-1" >
                 <div class="float-right">
@@ -80,7 +80,7 @@
 <#if session??>
 <#if session.user.group.getName()=="ADMIN">
     <div class="border rounded float-left w25 p-1" style="min-width:240px">
-        <img src="https://www.euscoop.com/user-uploads/59a667d323a9493b937a94c1/014ed1ca-979d-4837-a284-47d174c5fabc.png" style="width:200px;height:200px"/>
+        <img src="static/images/buy.png" style="width:200px;height:200px"/>
         <div class="p-1" ><div class="float-right"><a href="/product/add">Add product</a></div>
         </div>
     </div>
