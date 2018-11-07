@@ -4,13 +4,15 @@ import com.study.onlineshop.context.ApplicationContext;
 
 public class ApplicationContextProvider {
 
-    private static ApplicationContext context;
+    public static final ApplicationContextProvider INSTANCE = new ApplicationContextProvider();
 
-    public static void setApplicationContext(ApplicationContext ctx) {
-        context = ctx;
+    private ApplicationContext context;
+
+    public void setApplicationContext(ApplicationContext context) {
+        this.context = context;
     }
 
-    public static ApplicationContext getApplicationContext() {
+    public ApplicationContext getApplicationContext() {
         return context;
     }
 }

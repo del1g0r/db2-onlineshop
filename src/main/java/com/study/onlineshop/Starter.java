@@ -25,7 +25,7 @@ public class Starter {
     public static void main(String[] args) throws Exception {
         // configure
         XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader("context.xml");
-        ApplicationContextProvider.setApplicationContext(new ClassPathApplicationContext(reader));
+        ApplicationContextProvider.INSTANCE.setApplicationContext(new ClassPathApplicationContext(reader));
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
@@ -36,7 +36,7 @@ public class Starter {
 
         // config web server
         ServletContextHandler servletContextHandler = new ServletContextHandler();
-        ApplicationContext context = ApplicationContextProvider.getApplicationContext();
+        ApplicationContext context = ApplicationContextProvider.INSTANCE.getApplicationContext();
         servletContextHandler.addServlet(new ServletHolder(context.getBean("productsServlet", Servlet.class)), "/products");
         servletContextHandler.addServlet(new ServletHolder(context.getBean("productsServlet", Servlet.class)), "");
         servletContextHandler.addServlet(new ServletHolder(context.getBean("addProductServlet", Servlet.class)), "/product/add");
