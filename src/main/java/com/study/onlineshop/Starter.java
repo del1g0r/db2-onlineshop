@@ -1,8 +1,7 @@
 package com.study.onlineshop;
 
-import com.study.onlineshop.context.ApplicationContext;
-import com.study.onlineshop.context.impl.ClassPathApplicationContext;
-import com.study.onlineshop.context.impl.XmlBeanDefinitionReader;
+import com.study.ioc.ApplicationContextFactory;
+import com.study.ioc.context.ApplicationContext;
 import com.study.onlineshop.entity.Group;
 import com.study.onlineshop.service.SecurityService;
 import com.study.onlineshop.web.filter.RoleFilter;
@@ -17,15 +16,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import javax.servlet.DispatcherType;
 import javax.servlet.Filter;
 import javax.servlet.Servlet;
-import java.net.URL;
 import java.util.EnumSet;
 
 public class Starter {
 
     public static void main(String[] args) throws Exception {
         // configure
-        XmlBeanDefinitionReader reader = new XmlBeanDefinitionReader("context.xml");
-        ApplicationContextProvider.INSTANCE.setApplicationContext(new ClassPathApplicationContext(reader));
+        ApplicationContext context =  ApplicationContextFactory.loadApplicationContext("context.xml");
 
         ResourceHandler resourceHandler = new ResourceHandler();
         resourceHandler.setDirectoriesListed(true);
@@ -36,7 +33,6 @@ public class Starter {
 
         // config web server
         ServletContextHandler servletContextHandler = new ServletContextHandler();
-        ApplicationContext context = ApplicationContextProvider.INSTANCE.getApplicationContext();
         servletContextHandler.addServlet(new ServletHolder(context.getBean("productsServlet", Servlet.class)), "/products");
         servletContextHandler.addServlet(new ServletHolder(context.getBean("productsServlet", Servlet.class)), "");
         servletContextHandler.addServlet(new ServletHolder(context.getBean("addProductServlet", Servlet.class)), "/product/add");

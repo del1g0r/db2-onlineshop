@@ -29,6 +29,5 @@ public class ServerWrapper {
         Server server = new Server(port);
         server.setHandler(handlerList);
         server.start();
-
     }
 }
