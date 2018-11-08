@@ -8,6 +8,7 @@ import com.study.onlineshop.service.UserService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class DefaultSecurityService implements SecurityService {
@@ -35,10 +36,15 @@ public class DefaultSecurityService implements SecurityService {
         return sessionAge;
     }
 
-    @Override
-    public Session login(String login, String password) {
-        User user = userService.checkUser(login, password);
-        if (user != null) {
+    Session getOrCreateSession(User user) {
+        synchronized (this) {
+            for (Map.Entry<String, Session> entry : sessions.entrySet()) {
+                Session session = entry.getValue();
+                if (user.getId() == session.getUser().getId()) {
+                    session.setExpireTime(LocalDateTime.now().plusSeconds(sessionAge));
+                    return session;
+                }
+            }
             Session session = new Session();
             session.setUser(user);
             session.setToken(UUID.randomUUID().toString());
@@ -46,6 +52,14 @@ public class DefaultSecurityService implements SecurityService {
             session.setPurchases(new ArrayList<>());
             sessions.put(session.getToken(), session);
             return session;
+        }
+    }
+
+    @Override
+    public Session login(String login, String password) {
+        User user = userService.checkUser(login, password);
+        if (user != null) {
+            return getOrCreateSession(user);
         }
         return null;
     }
