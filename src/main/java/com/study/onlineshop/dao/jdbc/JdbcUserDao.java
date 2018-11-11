@@ -12,7 +12,7 @@ import java.util.List;
 public class JdbcUserDao implements UserDao {
 
     private static final String GET_ALL_SQL = "SELECT id, name, group_name FROM \"user\"";
-    private static final String CHECK_PWD_SQL = "SELECT pswhash = crypt(?, salt) is_checked FROM \"user\" WHERE name = ?";
+    private static final String CHECK_PWD_SQL = "SELECT pswhash = crypt(?, salt) is_checked, id, name, group_name FROM \"user\" WHERE name = ?";
     private static final String CREATE_SQL = "INSERT INTO \"user\" (name, salt, pswhash, group_name) SELECT ?, t.md5, crypt(?, t.md5), 'GUEST' FROM (SELECT gen_salt('md5') md5) t";
     private static final String GET_SQL = "SELECT id, name, group_name FROM \"user\" WHERE id = ?";
     private static final String GET_BY_NAME_SQL = "SELECT id, name, group_name FROM \"user\" WHERE name = ?";
@@ -79,15 +79,15 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public boolean checkPassword(String name, String password) {
+    public User checkPassword(String name, String password) {
         try (Connection connection = getConnection();
              PreparedStatement statement = prepareCheckPasswordStatement(connection, name, password);
              ResultSet resultSet = statement.executeQuery()) {
 
-            if (resultSet.next()) {
-                return resultSet.getBoolean("is_checked");
+            if (resultSet.next() && resultSet.getBoolean("is_checked")) {
+                return USER_ROW_MAPPER.mapRow(resultSet);
             }
-            return false;
+            return null;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

@@ -10,17 +10,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultSecurityService implements SecurityService {
 
-    private HashMap<String, Session> sessions = new HashMap<>();
+    private volatile Map<String, Session> sessions = new ConcurrentHashMap<>();
     private UserService userService;
+    private int sessionAge;
 
     public UserService getUserService() {
         return userService;
     }
-
-    int sessionAge;
 
     public void setUserService(UserService userService) {
         this.userService = userService;
@@ -36,23 +36,21 @@ public class DefaultSecurityService implements SecurityService {
         return sessionAge;
     }
 
-    Session getOrCreateSession(User user) {
-        synchronized (this) {
-            for (Map.Entry<String, Session> entry : sessions.entrySet()) {
-                Session session = entry.getValue();
-                if (user.getId() == session.getUser().getId()) {
-                    session.setExpireTime(LocalDateTime.now().plusSeconds(sessionAge));
-                    return session;
-                }
+    synchronized Session getOrCreateSession(User user) {
+        for (Map.Entry<String, Session> entry : sessions.entrySet()) {
+            Session session = entry.getValue();
+            if (user.getId() == session.getUser().getId()) {
+                session.setExpireTime(LocalDateTime.now().plusSeconds(sessionAge));
+                return session;
             }
-            Session session = new Session();
-            session.setUser(user);
-            session.setToken(UUID.randomUUID().toString());
-            session.setExpireTime(LocalDateTime.now().plusSeconds(sessionAge));
-            session.setPurchases(new ArrayList<>());
-            sessions.put(session.getToken(), session);
-            return session;
         }
+        Session session = new Session();
+        session.setUser(user);
+        session.setToken(UUID.randomUUID().toString());
+        session.setExpireTime(LocalDateTime.now().plusSeconds(sessionAge));
+        session.setPurchases(new ArrayList<>());
+        sessions.put(session.getToken(), session);
+        return session;
     }
 
     @Override

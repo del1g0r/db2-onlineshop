@@ -1,17 +1,17 @@
 package com.study.onlineshop.web.servlet;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.ioc.annotation.ResourceService;
 import com.study.onlineshop.entity.Product;
 import com.study.onlineshop.service.ProductService;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-public class ProductsApiServlet extends HttpServlet {
+public class ProductsApiServlet extends IocHttpServlet {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
     private ProductService productService;
@@ -26,6 +26,15 @@ public class ProductsApiServlet extends HttpServlet {
     }
 
     public ProductsApiServlet(ProductService productService) {
+        this.productService = productService;
+    }
+
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    @ResourceService
+    public void setProductService(ProductService productService) {
         this.productService = productService;
     }
 }

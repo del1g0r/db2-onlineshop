@@ -7,7 +7,7 @@
     <groupId>com.study</groupId>
     <artifactId>online-shop</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-
+    <packaging>war</packaging>
 
     <build>
         <plugins>
@@ -20,40 +20,16 @@
                     <target>1.8</target>
                 </configuration>
             </plugin>
-
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>2.4</version>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.study.onlineshop.Starter</mainClass>
-                        </manifest>
-                    </archive>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>com.study.onlineshop.Starter</mainClass>
-                        </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
+                    <port>8081</port>
+                    <path>/</path>
                 </configuration>
             </plugin>
         </plugins>
-
-        <resources>
-            <resource>
-                <directory>src/main/resources</directory>
-            </resource>
-        </resources>
     </build>
 
     <dependencies>

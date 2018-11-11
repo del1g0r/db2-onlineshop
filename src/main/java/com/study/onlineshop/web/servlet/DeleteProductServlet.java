@@ -1,14 +1,14 @@
 package com.study.onlineshop.web.servlet;
 
+import com.study.ioc.annotation.ResourceService;
 import com.study.onlineshop.service.ProductService;
 import com.study.onlineshop.service.impl.RequestParser;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class DeleteProductServlet extends HttpServlet {
+public class DeleteProductServlet extends IocHttpServlet {
 
     private ProductService productService;
 
@@ -16,6 +16,7 @@ public class DeleteProductServlet extends HttpServlet {
         return productService;
     }
 
+    @ResourceService
     public void setProductService(ProductService productService) {
         this.productService = productService;
     }

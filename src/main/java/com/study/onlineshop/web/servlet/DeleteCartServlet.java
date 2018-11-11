@@ -1,15 +1,15 @@
 package com.study.onlineshop.web.servlet;
 
+import com.study.ioc.annotation.ResourceService;
 import com.study.onlineshop.entity.Session;
 import com.study.onlineshop.service.CartService;
 import com.study.onlineshop.service.ProductService;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class DeleteCartServlet extends HttpServlet {
+public class DeleteCartServlet extends IocHttpServlet {
 
     private ProductService productService;
     private CartService cartService;
@@ -18,6 +18,7 @@ public class DeleteCartServlet extends HttpServlet {
         return productService;
     }
 
+    @ResourceService
     public void setProductService(ProductService productService) {
         this.productService = productService;
     }
@@ -26,6 +27,7 @@ public class DeleteCartServlet extends HttpServlet {
         return cartService;
     }
 
+    @ResourceService
     public void setCartService(CartService cartService) {
         this.cartService = cartService;
     }
