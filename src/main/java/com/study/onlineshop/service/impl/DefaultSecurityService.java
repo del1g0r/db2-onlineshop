@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class DefaultSecurityService implements SecurityService {
 
-    private volatile Map<String, Session> sessions = new ConcurrentHashMap<>();
+    private Map<String, Session> sessions = new ConcurrentHashMap<>();
     private UserService userService;
     private int sessionAge;
 
