@@ -15,7 +15,11 @@ public class LoginServlet extends HttpServlet {
 
     private SecurityService securityService;
 
-    public LoginServlet(SecurityService securityService) {
+    public SecurityService getSecurityService() {
+        return securityService;
+    }
+
+    public void setSecurityService(SecurityService securityService) {
         this.securityService = securityService;
     }
 
@@ -35,9 +39,11 @@ public class LoginServlet extends HttpServlet {
         if (session != null) {
             Cookie cookie = new Cookie("user-token", session.getToken());
             resp.addCookie(cookie);
+            cookie.setMaxAge(securityService.getSessionAge());
             resp.sendRedirect("/");
         } else {
             resp.sendRedirect("/login");
         }
     }
+
 }

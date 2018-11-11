@@ -10,7 +10,11 @@ public class DefaultUserService implements UserService {
 
     private UserDao userDao;
 
-    public DefaultUserService(UserDao userDao) {
+    private UserDao getUserDao() {
+        return userDao;
+    }
+
+    public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
 

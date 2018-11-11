@@ -1,6 +1,5 @@
 package com.study.onlineshop.service.impl;
 
-import com.study.onlineshop.entity.Purchase;
 import com.study.onlineshop.entity.Session;
 import com.study.onlineshop.entity.User;
 import com.study.onlineshop.service.SecurityService;
@@ -9,28 +8,58 @@ import com.study.onlineshop.service.UserService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class DefaultSecurityService implements SecurityService {
 
-    private UserService userService;
     private HashMap<String, Session> sessions = new HashMap<>();
+    private UserService userService;
 
-    public DefaultSecurityService(UserService userService) {
+    public UserService getUserService() {
+        return userService;
+    }
+
+    int sessionAge;
+
+    public void setUserService(UserService userService) {
         this.userService = userService;
+    }
+
+    @Override
+    public void setSessionAge(int age) {
+        sessionAge = age;
+    }
+
+    @Override
+    public int getSessionAge() {
+        return sessionAge;
+    }
+
+    Session getOrCreateSession(User user) {
+        synchronized (this) {
+            for (Map.Entry<String, Session> entry : sessions.entrySet()) {
+                Session session = entry.getValue();
+                if (user.getId() == session.getUser().getId()) {
+                    session.setExpireTime(LocalDateTime.now().plusSeconds(sessionAge));
+                    return session;
+                }
+            }
+            Session session = new Session();
+            session.setUser(user);
+            session.setToken(UUID.randomUUID().toString());
+            session.setExpireTime(LocalDateTime.now().plusSeconds(sessionAge));
+            session.setPurchases(new ArrayList<>());
+            sessions.put(session.getToken(), session);
+            return session;
+        }
     }
 
     @Override
     public Session login(String login, String password) {
         User user = userService.checkUser(login, password);
         if (user != null) {
-            Session session = new Session();
-            session.setUser(user);
-            session.setToken(UUID.randomUUID().toString());
-            session.setExpireTime(LocalDateTime.now().plusHours(5));
-            session.setPurchases(new ArrayList<Purchase>());
-            sessions.put(session.getToken(), session);
-            return session;
+            return getOrCreateSession(user);
         }
         return null;
     }

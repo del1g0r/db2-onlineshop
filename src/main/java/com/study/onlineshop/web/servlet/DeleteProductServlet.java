@@ -12,7 +12,11 @@ public class DeleteProductServlet extends HttpServlet {
 
     private ProductService productService;
 
-    public DeleteProductServlet(ProductService productService) {
+    public ProductService getProductService() {
+        return productService;
+    }
+
+    public void setProductService(ProductService productService) {
         this.productService = productService;
     }
 
