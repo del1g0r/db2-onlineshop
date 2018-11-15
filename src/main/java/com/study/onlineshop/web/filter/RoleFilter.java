@@ -1,9 +1,11 @@
 package com.study.onlineshop.web.filter;
 
+import com.study.ioc.annotation.ResourceService;
 import com.study.onlineshop.entity.Group;
 import com.study.onlineshop.entity.Session;
 import com.study.onlineshop.service.SecurityService;
 
+import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -11,13 +13,17 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.EnumSet;
 
-public class RoleFilter implements Filter {
+public abstract class RoleFilter implements Filter {
 
     private SecurityService securityService;
     private EnumSet<Group> groups;
 
     public RoleFilter(SecurityService securityService, EnumSet<Group> groups) {
         this.securityService = securityService;
+        this.groups = groups;
+    }
+
+    public RoleFilter(EnumSet<Group> groups) {
         this.groups = groups;
     }
 
@@ -55,11 +61,19 @@ public class RoleFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
-
     }
 
     @Override
     public void destroy() {
+    }
 
+    public SecurityService getSecurityService() {
+        return securityService;
+    }
+
+    @ResourceService
+    public void setSecurityService(SecurityService securityService) {
+        this.securityService = securityService;
     }
 }
+

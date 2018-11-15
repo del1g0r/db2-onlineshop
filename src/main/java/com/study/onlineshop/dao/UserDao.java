@@ -10,5 +10,5 @@ public interface UserDao {
 
     User getByName(String name);
 
-    boolean checkPassword(String name, String password);
+    User checkPassword(String name, String password);
 }

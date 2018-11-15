@@ -25,9 +25,6 @@ public class DefaultUserService implements UserService {
 
     @Override
     public User checkUser(String login, String password) {
-        if (userDao.checkPassword(login, password)) {
-            return userDao.getByName(login);
-        }
-        return null;
+        return userDao.checkPassword(login, password);
     }
 }

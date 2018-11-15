@@ -1,17 +1,17 @@
 package com.study.onlineshop.web.servlet;
 
+import com.study.ioc.annotation.ResourceService;
 import com.study.onlineshop.entity.Product;
 import com.study.onlineshop.service.ProductService;
 import com.study.onlineshop.web.templater.PageGenerator;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
-public class ProductsServlet extends HttpServlet {
+public class ProductsServlet extends IocHttpServlet {
 
     private ProductService productService;
 
@@ -19,6 +19,7 @@ public class ProductsServlet extends HttpServlet {
         return productService;
     }
 
+    @ResourceService
     public void setProductService(ProductService productService) {
         this.productService = productService;
     }

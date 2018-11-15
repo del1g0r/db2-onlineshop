@@ -1,20 +1,15 @@
 package com.study.onlineshop.web.servlet;
 
+import com.study.ioc.annotation.ResourceService;
 import com.study.onlineshop.entity.Session;
-import com.study.onlineshop.service.PermissionService;
-import com.study.onlineshop.service.ProductService;
 import com.study.onlineshop.service.SecurityService;
-import com.study.onlineshop.service.impl.RequestParser;
-import com.study.onlineshop.web.templater.PageGenerator;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 
-public class LogoutServlet extends HttpServlet {
+public class LogoutServlet extends IocHttpServlet {
 
     private SecurityService securityService;
 
@@ -22,6 +17,7 @@ public class LogoutServlet extends HttpServlet {
         return securityService;
     }
 
+    @ResourceService
     public void setSecurityService(SecurityService securityService) {
         this.securityService = securityService;
     }
