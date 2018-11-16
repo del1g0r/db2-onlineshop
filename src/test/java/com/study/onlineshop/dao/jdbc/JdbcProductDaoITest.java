@@ -13,13 +13,13 @@ import static org.junit.Assert.assertNotNull;
 public class JdbcProductDaoITest {
     @Test
     public void testGetAll() throws Exception {
-        PGSimpleDataSource source = new PGSimpleDataSource();
-        source.setUrl("jdbc:postgresql://localhost/db2_onlineshop");
-        source.setUser("postgres");
-        source.setPassword("123456");
+        PGSimpleDataSource dataSource = new PGSimpleDataSource();
+        dataSource.setUrl("jdbc:postgresql://localhost/db2_onlineshop");
+        dataSource.setUser("postgres");
+        dataSource.setPassword("123456");
 
         JdbcProductDao jdbcProductDao = new JdbcProductDao();
-        jdbcProductDao.setSource(source);
+        jdbcProductDao.setDataSource(dataSource);
 
         List<Product> products = jdbcProductDao.getAll();
         for (Product product : products) {

@@ -3,20 +3,16 @@ package com.study.onlineshop.service.impl;
 import com.study.onlineshop.dao.ProductDao;
 import com.study.onlineshop.entity.Product;
 import com.study.onlineshop.service.ProductService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class DefaultProductService implements ProductService {
 
+    @Autowired
     private ProductDao productDao;
-
-    public ProductDao getProductDao() {
-        return productDao;
-    }
-
-    public void setProductDao(ProductDao productDao) {
-        this.productDao = productDao;
-    }
 
     @Override
     public List<Product> getAll() {
@@ -41,5 +37,13 @@ public class DefaultProductService implements ProductService {
     @Override
     public void delete(int id) {
         productDao.delete(id);
+    }
+
+    public ProductDao getProductDao() {
+        return productDao;
+    }
+
+    public void setProductDao(ProductDao productDao) {
+        this.productDao = productDao;
     }
 }
