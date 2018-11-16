@@ -3,6 +3,7 @@ package com.study.onlineshop.dao.jdbc;
 import com.study.onlineshop.entity.Product;
 import org.junit.Test;
 import org.postgresql.ds.PGSimpleDataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -18,8 +19,11 @@ public class JdbcProductDaoITest {
         dataSource.setUser("postgres");
         dataSource.setPassword("123456");
 
+        JdbcTemplate jdbcTemplate = new  JdbcTemplate();
+        jdbcTemplate.setDataSource(dataSource);
+
         JdbcProductDao jdbcProductDao = new JdbcProductDao();
-        jdbcProductDao.setDataSource(dataSource);
+        jdbcProductDao.jdbcTemplate = jdbcTemplate;
 
         List<Product> products = jdbcProductDao.getAll();
         for (Product product : products) {
