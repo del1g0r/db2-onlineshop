@@ -28,7 +28,7 @@
         </div>
         <div class="form-group">
             <input type="datetime-local" class="form-control" name="creationDate" placeholder="Creation date"
-                   th:value="${#temporals.format(product.creationDate, 'yyyy-MM-dd')} + 'T' + ${#temporals.format(product.creationDate, 'hh:mm')}">
+                   th:value="${#temporals.format(product.creationDate, 'yyyy-MM-dd''T''hh:mm')}">
         </div>
 
         <button type="submit" class="btn btn-primary">Submit</button>
