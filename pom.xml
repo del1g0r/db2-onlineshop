@@ -9,6 +9,18 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>war</packaging>
 
+    <developers>
+        <developer>
+            <id>1g0r</id>
+            <name>Ihor</name>
+            <email>acc@1g0r.pp.ua</email>
+            <url>http://1g0r.pp.ua</url>
+            <roles>
+                <role>developer</role>
+            </roles>
+        </developer>
+    </developers>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
