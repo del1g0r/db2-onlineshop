@@ -3,12 +3,14 @@ package com.study.onlineshop.dao.jdbc;
 import com.study.onlineshop.dao.ProductDao;
 import com.study.onlineshop.dao.jdbc.mapper.ProductRowMapper;
 import com.study.onlineshop.entity.Product;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class JdbcProductDao implements ProductDao {
 
     private static final String GET_ALL_SQL = "SELECT id, name, creation_date, price FROM product";
@@ -18,97 +20,39 @@ public class JdbcProductDao implements ProductDao {
     private static final String DELETE_SQL = "DELETE FROM product WHERE id = ?";
     private static final ProductRowMapper PRODUCT_ROW_MAPPER = new ProductRowMapper();
 
-    private DataSource source;
-
-    public DataSource getSource() {
-        return source;
-    }
-
-    public void setSource(DataSource source) {
-        this.source = source;
-    }
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     @Override
     public List<Product> getAll() {
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(GET_ALL_SQL)) {
-
-
-            List<Product> products = new ArrayList<>();
-            while (resultSet.next()) {
-                Product product = PRODUCT_ROW_MAPPER.mapRow(resultSet);
-                products.add(product);
-            }
-
-            return products;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
+        List<Product> products = jdbcTemplate.query(GET_ALL_SQL, PRODUCT_ROW_MAPPER);
+        return products;
     }
 
     @Override
     public void create(Product product) {
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(CREATE_SQL);) {
-            statement.setString(1, product.getName());
-            statement.setTimestamp(2, Timestamp.valueOf(product.getCreationDate()));
-            statement.setDouble(3, product.getPrice());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private PreparedStatement prepareGetStatement(Connection connection, int id) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(GET_SQL);
-        statement.setInt(1, id);
-        return statement;
+        jdbcTemplate.update(
+                CREATE_SQL,
+                product.getName(), Timestamp.valueOf(product.getCreationDate()), product.getPrice());
     }
 
     @Override
     public Product get(int id) {
-        try (Connection connection = getConnection();
-             PreparedStatement statement = prepareGetStatement(connection, id);
-             ResultSet resultSet = statement.executeQuery();
-        ) {
-            if (resultSet.next()) {
-                return PRODUCT_ROW_MAPPER.mapRow(resultSet);
-            }
-            return null;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Product product = jdbcTemplate.queryForObject(GET_SQL, new Object[]{id}, PRODUCT_ROW_MAPPER);
+        return product;
     }
 
     @Override
     public void update(Product product) {
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(UPDATE_SQL);) {
-            statement.setString(1, product.getName());
-            statement.setTimestamp(2, Timestamp.valueOf(product.getCreationDate()));
-            statement.setDouble(3, product.getPrice());
-            statement.setInt(4, product.getId());
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        jdbcTemplate.update(
+                UPDATE_SQL,
+                product.getName(), Timestamp.valueOf(product.getCreationDate()), product.getPrice(), product.getId());
     }
 
     @Override
     public void delete(int id) {
-        try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(DELETE_SQL)) {
-            statement.setInt(1, id);
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        jdbcTemplate.update(
+                DELETE_SQL,
+                id);
     }
-
-    private Connection getConnection() throws SQLException {
-        return source.getConnection();
-    }
-
 }

@@ -3,7 +3,7 @@ package com.study.onlineshop.entity;
 public class Purchase {
 
     private Product product;
-    private int cnt;
+    private int count;
     private double sum;
 
     public Product getProduct() {
@@ -14,12 +14,12 @@ public class Purchase {
         this.product = product;
     }
 
-    public int getCnt() {
-        return cnt;
+    public int getCount() {
+        return count;
     }
 
-    public void setCnt(int cnt) {
-        this.cnt = cnt;
+    public void setCount(int count) {
+        this.count = count;
     }
 
     public double getSum() {

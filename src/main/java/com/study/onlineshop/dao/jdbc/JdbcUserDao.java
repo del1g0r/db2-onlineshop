@@ -1,14 +1,17 @@
 package com.study.onlineshop.dao.jdbc;
 
 import com.study.onlineshop.dao.UserDao;
+import com.study.onlineshop.dao.jdbc.mapper.UserCheckedRowMapper;
 import com.study.onlineshop.dao.jdbc.mapper.UserRowMapper;
 import com.study.onlineshop.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
-import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class JdbcUserDao implements UserDao {
 
     private static final String GET_ALL_SQL = "SELECT id, name, group_name FROM \"user\"";
@@ -18,83 +21,26 @@ public class JdbcUserDao implements UserDao {
     private static final String GET_BY_NAME_SQL = "SELECT id, name, group_name FROM \"user\" WHERE name = ?";
     private static final String DELETE_SQL = "DELETE FROM \"user\" WHERE id = ?";
     private static final UserRowMapper USER_ROW_MAPPER = new UserRowMapper();
+    private static final UserCheckedRowMapper USER_CHECKED_ROW_MAPPER = new UserCheckedRowMapper();
 
-    private DataSource source;
-
-    public DataSource getSource() {
-        return source;
-    }
-
-    public void setSource(DataSource source) {
-        this.source = source;
-    }
+    @Autowired
+    JdbcTemplate jdbcTemplate;
 
     @Override
     public List<User> getAll() {
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(GET_ALL_SQL)) {
-
-            List<User> users = new ArrayList<>();
-            while (resultSet.next()) {
-                User user = USER_ROW_MAPPER.mapRow(resultSet);
-                users.add(user);
-            }
-
-            return users;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    private PreparedStatement prepareGetByNameStatement(Connection connection, String name) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(GET_BY_NAME_SQL);
-        statement.setString(1, name);
-        return statement;
+        List<User> users = jdbcTemplate.query(GET_ALL_SQL, USER_ROW_MAPPER);
+        return users;
     }
 
     @Override
     public User getByName(String name) {
-        try (Connection connection = getConnection();
-             PreparedStatement statement = prepareGetByNameStatement(connection, name);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            if (resultSet.next()) {
-                User user = USER_ROW_MAPPER.mapRow(resultSet);
-                return user;
-            }
-            return null;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    private PreparedStatement prepareCheckPasswordStatement(Connection connection, String name, String password) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(CHECK_PWD_SQL);
-        statement.setString(1, password);
-        statement.setString(2, name);
-        return statement;
+        User user = jdbcTemplate.queryForObject(GET_BY_NAME_SQL, new Object[]{name}, USER_ROW_MAPPER);
+        return user;
     }
 
     @Override
     public User checkPassword(String name, String password) {
-        try (Connection connection = getConnection();
-             PreparedStatement statement = prepareCheckPasswordStatement(connection, name, password);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            if (resultSet.next() && resultSet.getBoolean("is_checked")) {
-                return USER_ROW_MAPPER.mapRow(resultSet);
-            }
-            return null;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
-        }
-    }
-
-    private Connection getConnection() throws SQLException {
-        return source.getConnection();
+        User user = jdbcTemplate.queryForObject(CHECK_PWD_SQL, new Object[]{password, name}, USER_CHECKED_ROW_MAPPER);
+        return user;
     }
 }

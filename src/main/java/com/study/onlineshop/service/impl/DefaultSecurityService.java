@@ -4,26 +4,28 @@ import com.study.onlineshop.entity.Session;
 import com.study.onlineshop.entity.User;
 import com.study.onlineshop.service.SecurityService;
 import com.study.onlineshop.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Service
 public class DefaultSecurityService implements SecurityService {
 
     private Map<String, Session> sessions = new ConcurrentHashMap<>();
+
+    @Autowired
     private UserService userService;
+    @Value("${web.sessionAge}")
     private int sessionAge;
 
-    public UserService getUserService() {
-        return userService;
-    }
-
-    public void setUserService(UserService userService) {
-        this.userService = userService;
+    public DefaultSecurityService() {
+        super();
     }
 
     @Override
@@ -77,5 +79,13 @@ public class DefaultSecurityService implements SecurityService {
             sessions.remove(token);
         }
         return null;
+    }
+
+    public UserService getUserService() {
+        return userService;
+    }
+
+    public void setUserService(UserService userService) {
+        this.userService = userService;
     }
 }

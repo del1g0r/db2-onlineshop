@@ -1,11 +1,11 @@
 package com.study.onlineshop.web.filter;
 
-import com.study.ioc.annotation.ResourceService;
 import com.study.onlineshop.entity.Group;
 import com.study.onlineshop.entity.Session;
 import com.study.onlineshop.service.SecurityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -13,19 +13,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.EnumSet;
 
-public abstract class RoleFilter implements Filter {
+public class RoleFilter implements Filter {
 
     private SecurityService securityService;
-    private EnumSet<Group> groups;
-
-    public RoleFilter(SecurityService securityService, EnumSet<Group> groups) {
-        this.securityService = securityService;
-        this.groups = groups;
-    }
-
-    public RoleFilter(EnumSet<Group> groups) {
-        this.groups = groups;
-    }
+    private EnumSet<Group> groups = EnumSet.noneOf(Group.class);
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -40,7 +31,8 @@ public abstract class RoleFilter implements Filter {
                     String token = cookie.getValue();
                     session = securityService.getSession(token);
                     if (session != null) {
-                        if (groups.contains(session.getUser().getGroup())) {
+                        Group useGroup = session.getUser().getGroup();
+                        if (groups.contains(useGroup)) {
                             isAuth = true;
                         }
                     }
@@ -61,19 +53,16 @@ public abstract class RoleFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) {
+        for (String strGroup : filterConfig.getInitParameter("groups").split(",")) {
+            groups.add(Group.getByName(strGroup));
+        }
+        securityService = WebApplicationContextUtils.getRequiredWebApplicationContext
+                (filterConfig.getServletContext()).getBean(SecurityService.class);
     }
 
     @Override
     public void destroy() {
     }
-
-    public SecurityService getSecurityService() {
-        return securityService;
-    }
-
-    @ResourceService
-    public void setSecurityService(SecurityService securityService) {
-        this.securityService = securityService;
-    }
 }
+
 

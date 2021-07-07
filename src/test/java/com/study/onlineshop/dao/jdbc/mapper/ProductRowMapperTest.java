@@ -26,7 +26,7 @@ public class ProductRowMapperTest {
         when(resultSet.getTimestamp("creation_date")).thenReturn(Timestamp.valueOf(expectedDate));
 
         // when
-        Product actualProduct = productRowMapper.mapRow(resultSet);
+        Product actualProduct = productRowMapper.mapRow(resultSet, 1);
 
         // then
         assertEquals(1, actualProduct.getId());

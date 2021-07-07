@@ -1,125 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
 
-    <!--> Listeners <-->
-    <display-name>MyListeningApplication</display-name>
     <listener>
-        <listener-class>com.study.onlineshop.web.listener.IocServletContextListener</listener-class>
+        <listener-class>
+            org.springframework.web.context.ContextLoaderListener
+        </listener-class>
     </listener>
 
-    <!--> Servlets <-->
     <servlet>
-        <servlet-name>productsServlet</servlet-name>
-        <servlet-class>com.study.onlineshop.web.servlet.ProductsServlet</servlet-class>
+        <servlet-name>dispatcherServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
-    <servlet>
-        <servlet-name>addProductServlet</servlet-name>
-        <servlet-class>com.study.onlineshop.web.servlet.AddProductServlet</servlet-class>
-    </servlet>
-
-    <servlet>
-        <servlet-name>editProductServlet</servlet-name>
-        <servlet-class>com.study.onlineshop.web.servlet.EditProductServlet</servlet-class>
-    </servlet>
-
-    <servlet>
-        <servlet-name>deleteProductServlet</servlet-name>
-        <servlet-class>com.study.onlineshop.web.servlet.DeleteProductServlet</servlet-class>
-    </servlet>
-
-    <servlet>
-        <servlet-name>loginServlet</servlet-name>
-        <servlet-class>com.study.onlineshop.web.servlet.LoginServlet</servlet-class>
-    </servlet>
-
-    <servlet>
-        <servlet-name>logoutServlet</servlet-name>
-        <servlet-class>com.study.onlineshop.web.servlet.LogoutServlet</servlet-class>
-    </servlet>
-
-    <servlet>
-        <servlet-name>cartServlet</servlet-name>
-        <servlet-class>com.study.onlineshop.web.servlet.CartServlet</servlet-class>
-    </servlet>
-
-    <servlet>
-        <servlet-name>addCartServlet</servlet-name>
-        <servlet-class>com.study.onlineshop.web.servlet.AddCartServlet</servlet-class>
-    </servlet>
-
-    <servlet>
-        <servlet-name>deleteCartServlet</servlet-name>
-        <servlet-class>com.study.onlineshop.web.servlet.DeleteCartServlet</servlet-class>
-    </servlet>
-
-    <!--> Servlet mappings <-->
     <servlet-mapping>
-        <servlet-name>productsServlet</servlet-name>
-        <url-pattern>/products</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>productsServlet</servlet-name>
-        <url-pattern></url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>addProductServlet</servlet-name>
-        <url-pattern>/product/add</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>editProductServlet</servlet-name>
-        <url-pattern>/product/edit/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>deleteProductServlet</servlet-name>
-        <url-pattern>/product/delete/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>loginServlet</servlet-name>
-        <url-pattern>/login</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>logoutServlet</servlet-name>
-        <url-pattern>/logout</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>cartServlet</servlet-name>
-        <url-pattern>/cart</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>addCartServlet</servlet-name>
-        <url-pattern>/cart/add</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>deleteCartServlet</servlet-name>
-        <url-pattern>/cart/delete</url-pattern>
+        <servlet-name>dispatcherServlet</servlet-name>
+        <url-pattern>/</url-pattern>
     </servlet-mapping>
 
     <!--> Filters <-->
     <filter>
         <filter-name>guestFilter</filter-name>
-        <filter-class>com.study.onlineshop.web.filter.IocGuestFilter</filter-class>
+        <filter-class>com.study.onlineshop.web.filter.RoleFilter</filter-class>
+        <init-param>
+            <param-name>groups</param-name>
+            <param-value>GUEST,USER,ADMIN</param-value>
+        </init-param>
     </filter>
-
     <filter>
         <filter-name>userFilter</filter-name>
-        <filter-class>com.study.onlineshop.web.filter.IocUserFilter</filter-class>
+        <filter-class>com.study.onlineshop.web.filter.RoleFilter</filter-class>
+        <init-param>
+            <param-name>groups</param-name>
+            <param-value>USER,ADMIN</param-value>
+        </init-param>
     </filter>
-
     <filter>
         <filter-name>adminFilter</filter-name>
-        <filter-class>com.study.onlineshop.web.filter.IocAdminFilter</filter-class>
+        <filter-class>com.study.onlineshop.web.filter.RoleFilter</filter-class>
+        <init-param>
+            <param-name>groups</param-name>
+            <param-value>ADMIN</param-value>
+        </init-param>
     </filter>
 
     <!--> Filter mappings <-->
